@@ -1,0 +1,25 @@
+@page "/customer/customer-dashboard"
+
+@using Northwind.Client.Components.Layout.Customer;
+@using System.ComponentModel.DataAnnotations;
+@using Microsoft.EntityFrameworkCore;
+@using Northwind.Client.Context;
+@using Northwind.Client.Entities;
+@using Northwind.Client.Sessions;
+
+@inject CustomerSessions CustomerSessions
+
+@layout CustomerLayout
+
+@inject NavigationManager NavigationManager
+@inject DbContextNorthwind DbContext
+
+<PageTitle>Customer Dashboard</PageTitle>
+
+
+@code {
+
+    
+}
+    
+    

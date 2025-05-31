@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace NorthwindDemo.Entities;
+namespace Northwind.Client.Entities;
 
 [Keyless]
 public partial class ProductSalesFor1997

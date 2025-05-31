@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using NorthwindDemo.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Northwind.Client.Entities;
 
-namespace NorthwindDemo.Context;
+namespace Northwind.Client.Context;
 
 public partial class DbContextNorthwind : DbContext
 {
@@ -72,7 +70,7 @@ public partial class DbContextNorthwind : DbContext
 
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //    => optionsBuilder.UseSqlServer("Data Source=DESKTOP-VQ36L9O;Initial Catalog=Northwind;User ID=sa;Password=sa;Trust Server Certificate=True");
+    //    => optionsBuilder.UseSqlServer("Data Source=DESKTOP-TG73TTD;Initial Catalog=Northwind;User ID=sa;Password=sa;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

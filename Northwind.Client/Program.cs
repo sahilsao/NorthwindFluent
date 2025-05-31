@@ -1,11 +1,20 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Northwind.Client.Components;
+using Northwind.Client.Sessions;
+using Northwind.Client.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<CustomerSessions>();
+
+builder.Services.AddDbContext<DbContextNorthwind>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddFluentUIComponents();
 
 var app = builder.Build();

@@ -1,0 +1,99 @@
+﻿@page "/"
+@page "/customer/customer-login"
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Northwind.Client.Components.Layout
+@using System.Security.Cryptography
+@using System.Text
+@using System.Linq
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore;
+@using Northwind.Client.Context
+@using Northwind.Client.Entities
+@using Microsoft.AspNetCore.Http
+
+@layout EmptyLayout
+
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@inject ProtectedSessionStorage ProtectedSessionStorage
+
+@inject DbContextNorthwind DbContext
+
+<PageTitle>Customer Login</PageTitle>
+
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+	<DataAnnotationsValidator />
+	<FluentValidationSummary />
+	<FluentGrid Justify="JustifyContent.FlexEnd" AdaptiveRendering=true>
+		<FluentGridItem sm="12" xs="12" lg="4" md="4">
+			<FluentCard>
+				<FluentHeader>
+					Login
+				</FluentHeader>
+				<br />
+				<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="10">
+					<FluentTextField @bind-Value="loginModel.UserName" TextFieldType="TextFieldType.Text" Placeholder="Enter Your User ID">User Id</FluentTextField>
+
+					<FluentTextField @bind-Value="loginModel.Password" TextFieldType="TextFieldType.Password" Placeholder="Enter Your Password">Password</FluentTextField>
+
+				</FluentStack>
+				<br />
+				<FluentButton IconStart="@(new Icons.Regular.Size16.Person())"
+							  Appearance="Appearance.Accent"
+							  Loading="@loading"
+							  Type="ButtonType.Submit"
+							  OnClick="@StartLoadingAsync">
+					Login
+				</FluentButton>
+			</FluentCard>
+
+		</FluentGridItem>
+	</FluentGrid>
+</EditForm>
+@code {
+
+	bool loading = false;
+
+	async Task StartLoadingAsync()
+	{
+		loading = true;
+		await Task.Delay(2000);
+		loading = false;
+	}
+
+	private LoginModel loginModel = new();
+
+	public class LoginModel
+	{
+		[Required]
+		public string UserName { get; set; } = String.Empty;
+
+		[Required]
+		public string Password { get; set; } = String.Empty;
+	}
+
+	private async Task HandleLogin()
+	{
+		var enteredId = loginModel.UserName?.Trim().ToUpper();
+		var enteredPassword = loginModel.Password;
+
+		var customer = await DbContext.Customers
+		.Where(c => c.CustomerId == enteredId)
+		.Select(c => new Customer
+		{
+			CustomerId = c.CustomerId,
+			CompanyName = c.CompanyName
+		})
+		.FirstOrDefaultAsync();
+
+		if (customer != null && enteredPassword == "password@123")
+		{
+			await ProtectedSessionStorage.SetAsync("CustomerID", customer.CustomerId!);
+			await ProtectedSessionStorage.SetAsync("CompanyName", customer.CompanyName!);
+		
+			NavigationManager.NavigateTo("/customer/customer-dashboard");
+		}				
+	}	
+}

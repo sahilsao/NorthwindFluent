@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
-namespace NorthwindDemo.Sessions
+namespace Northwind.Client.Sessions
 {
     public class CustomerSessions
     {
