@@ -12,8 +12,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<CustomerSessions>();
 
-builder.Services.AddDbContext<DbContextNorthwind>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContextFactory<DbContextNorthwind>(options =>
+    options.UseSqlServer("DefaultConnection"));
 
 builder.Services.AddFluentUIComponents();
 

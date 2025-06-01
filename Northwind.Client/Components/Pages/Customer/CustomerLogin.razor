@@ -15,17 +15,20 @@
 
 @layout EmptyLayout
 
+@inject IDbContextFactory<DbContextNorthwind> DbContextFactory
 @inject IToastService ToastService
 @inject NavigationManager NavigationManager
 @inject ProtectedSessionStorage ProtectedSessionStorage
 
-@inject DbContextNorthwind DbContext
-
 <PageTitle>Customer Login</PageTitle>
 
+<FluentOverlay @bind-Visible=@overlayvisible Opacity="0.4" FullScreen="true" PreventScroll=true>
+	<FluentProgressRing />
+</FluentOverlay>
+
 <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-	<DataAnnotationsValidator />
 	<FluentValidationSummary />
+	<DataAnnotationsValidator />
 	<FluentGrid Justify="JustifyContent.FlexEnd" AdaptiveRendering=true>
 		<FluentGridItem sm="12" xs="12" lg="4" md="4">
 			<FluentCard>
@@ -33,36 +36,39 @@
 					Login
 				</FluentHeader>
 				<br />
-				<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="10">
-					<FluentTextField @bind-Value="loginModel.UserName" TextFieldType="TextFieldType.Text" Placeholder="Enter Your User ID">User Id</FluentTextField>
+				<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
+					VerticalGap="10">
+					<FluentTextField @bind-Value="loginModel.UserName" TextFieldType="TextFieldType.Text"
+						Placeholder="Enter Your User ID">User Id</FluentTextField>
 
-					<FluentTextField @bind-Value="loginModel.Password" TextFieldType="TextFieldType.Password" Placeholder="Enter Your Password">Password</FluentTextField>
+					<FluentTextField @bind-Value="loginModel.Password"
+						TextFieldType="@(showPassword? TextFieldType.Password: TextFieldType.Text)"
+						Placeholder="Enter Your Password">Password
+
+						<FluentButton BackgroundColor="rgba(0, 0, 0, 0)" 
+							IconEnd="@(showPassword ? new Icons.Regular.Size16.Eye() : new Icons.Regular.Size16.EyeOff())"
+							Title="Globe" OnClick="TogglePasswordVisibility" Slot="end" />
+					</FluentTextField>
 
 				</FluentStack>
 				<br />
-				<FluentButton IconStart="@(new Icons.Regular.Size16.Person())"
-							  Appearance="Appearance.Accent"
-							  Loading="@loading"
-							  Type="ButtonType.Submit"
-							  OnClick="@StartLoadingAsync">
+				<FluentButton IconStart="@(new Icons.Regular.Size16.Person())" Appearance="Appearance.Accent"
+					Type="ButtonType.Submit" OnClick="HandleLogin">
 					Login
 				</FluentButton>
 			</FluentCard>
-
 		</FluentGridItem>
 	</FluentGrid>
 </EditForm>
+
+
 @code {
 
-	bool loading = false;
-
-	async Task StartLoadingAsync()
+	bool showPassword = true;
+	private void TogglePasswordVisibility()
 	{
-		loading = true;
-		await Task.Delay(2000);
-		loading = false;
+		showPassword = !showPassword;
 	}
-
 	private LoginModel loginModel = new();
 
 	public class LoginModel
@@ -74,17 +80,24 @@
 		public string Password { get; set; } = String.Empty;
 	}
 
+	bool overlayvisible = false;
+
 	private async Task HandleLogin()
 	{
+		overlayvisible = true; // Show overlay
+
 		var enteredId = loginModel.UserName?.Trim().ToUpper();
 		var enteredPassword = loginModel.Password;
 
-		var customer = await DbContext.Customers
+		await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+
+		var customer = await dbContext.Customers
 		.Where(c => c.CustomerId == enteredId)
 		.Select(c => new Customer
 		{
 			CustomerId = c.CustomerId,
-			CompanyName = c.CompanyName
+			CompanyName = c.CompanyName,
+			ContactName = c.ContactName
 		})
 		.FirstOrDefaultAsync();
 
@@ -92,8 +105,17 @@
 		{
 			await ProtectedSessionStorage.SetAsync("CustomerID", customer.CustomerId!);
 			await ProtectedSessionStorage.SetAsync("CompanyName", customer.CompanyName!);
-		
+			await ProtectedSessionStorage.SetAsync("ContactName", customer.ContactName!);
+
 			NavigationManager.NavigateTo("/customer/customer-dashboard");
-		}				
-	}	
+		}
+		else
+		{
+			// Hide overlay if login fails
+			overlayvisible = false;
+			ToastService.ShowError("Invalid credentials.");
+		}
+	}
+
+
 }

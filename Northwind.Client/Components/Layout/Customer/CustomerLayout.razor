@@ -1,25 +1,30 @@
-﻿@inherits LayoutComponentBase
-
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using Northwind.Client.Sessions
+@inherits LayoutComponentBase
+
+@inject IDialogService DialogService
 
 @inject ProtectedSessionStorage ProtectedSessionStorage
 @inject NavigationManager NavigationManager
 @inject CustomerSessions CustomerSessions
 
-@inject IDialogService DialogService
-
 <FluentDesignTheme Mode="DesignThemeModes.System" StorageName="theme" />
+<FluentDialogProvider />
+<FluentToastProvider MaxToastCount="10" Position="ToastPosition.BottomRight" />
+
 <FluentLayout>
 	<FluentHeader>
 		Northwind
 		<FluentSpacer />
-		<FluentIcon Value="@(new Icons.Regular.Size20.Settings())"
-					Color="Color.Lightweight"
-					OnClick="@ShowSettingAsync" />
+		<FluentIcon Id="Settings" Value="@(new Icons.Regular.Size20.Settings())" Color="Color.Lightweight"
+			OnClick="@ShowSettingAsync"/>
+		<FluentTooltip Anchor="Settings" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Bottom Delay=600>Settings</FluentTooltip>	
+		<FluentProfileMenu Image="favicon.ico" Status="@PresenceStatus.Available" HeaderLabel="Northwind" Initials="NW"
+			FullName="@ContactName" PopoverStyle="min-width: 330px;" FooterLink=""
+			OnHeaderButtonClick="Logout" />
 	</FluentHeader>
 	<FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
-		<NavMenu />
+		<CustomerNavMenu />
 		<FluentBodyContent Class="body-content">
 			<div class="content">
 				@Body
@@ -28,22 +33,44 @@
 	</FluentStack>
 </FluentLayout>
 
-
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+	An unhandled error has occurred.
+	<a href="." class="reload">Reload</a>
+	<span class="dismiss">🗙</span>
 </div>
 
 @code {
-    private async Task ShowSettingAsync()
+	private async Task ShowSettingAsync()
 	{
 		await DialogService.ShowPanelAsync<Layout.Settings>(new DialogParameters()
-			{
-				Title = "Settings",
-				Alignment = HorizontalAlignment.Right,
-				SecondaryAction = null,
-			});
+		{
+			Title = "Settings",
+			Alignment = HorizontalAlignment.Right,
+			SecondaryAction = null,
+		});
+	}
+
+	public string? CompanyName { get; set; }
+	public string? ContactName { get; set; }
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			var resultCompanyName = await ProtectedSessionStorage.GetAsync<string>("CompanyName");
+			CompanyName = resultCompanyName.Success ? resultCompanyName.Value : "Unknown";
+
+			var resultContactName = await ProtectedSessionStorage.GetAsync<string>("ContactName");
+			ContactName = resultContactName.Success ? resultContactName.Value : "Unknown";
+			StateHasChanged(); // Trigger UI re-render
+		}
+	}
+
+	private async void Logout()
+	{
+		await CustomerSessions.RemoveSessions();
+		// Logout user
+		NavigationManager.NavigateTo("/customer/customer-login");
 	}
 
 }

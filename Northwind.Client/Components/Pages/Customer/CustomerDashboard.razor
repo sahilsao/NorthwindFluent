@@ -12,14 +12,34 @@
 @layout CustomerLayout
 
 @inject NavigationManager NavigationManager
-@inject DbContextNorthwind DbContext
+@inject IToastService ToastService
 
 <PageTitle>Customer Dashboard</PageTitle>
 
-
 @code {
 
-    
+    public string? UserName { get; set; }
+    private bool _hasLoaded = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasLoaded)
+        {           
+            await LoadStateAsync();
+            _hasLoaded = true;           
+
+            StateHasChanged(); // Trigger UI re-render            
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        UserName = await CustomerSessions.GetCompanyName();
+
+        if (UserName == null)
+        {
+            NavigationManager.NavigateTo("/customer/customer-login");
+        }
+    }
+
 }
-    
-    

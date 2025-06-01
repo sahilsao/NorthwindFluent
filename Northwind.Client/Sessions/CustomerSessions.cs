@@ -22,6 +22,12 @@ namespace Northwind.Client.Sessions
             return val.Value!;
         }
 
+        public async Task<String> GetContactName()
+        {
+            var val = await ProtectedSessionStorage.GetAsync<String>("ContactName");
+            return val.Value!;
+        }
+
         public async Task RemoveSessions()
         {
             await ProtectedSessionStorage.DeleteAsync("CustomerID");
