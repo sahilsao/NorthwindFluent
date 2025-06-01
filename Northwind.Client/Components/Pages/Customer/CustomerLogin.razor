@@ -26,11 +26,12 @@
 	<FluentProgressRing />
 </FluentOverlay>
 
-<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-	<FluentValidationSummary />
-	<DataAnnotationsValidator />
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+
 	<FluentGrid Justify="JustifyContent.FlexEnd" AdaptiveRendering=true>
 		<FluentGridItem sm="12" xs="12" lg="4" md="4">
+
+			<DataAnnotationsValidator />
 			<FluentCard>
 				<FluentHeader>
 					Login
@@ -38,18 +39,18 @@
 				<br />
 				<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
 					VerticalGap="10">
-					<FluentTextField @bind-Value="loginModel.UserName" TextFieldType="TextFieldType.Text"
+					<FluentTextField Name="UserName" @bind-Value="loginModel.UserName" TextFieldType="TextFieldType.Text"
 						Placeholder="Enter Your User ID">User Id</FluentTextField>
-
+					<FluentValidationMessage For="@(() => loginModel.UserName)"/>
 					<FluentTextField @bind-Value="loginModel.Password"
 						TextFieldType="@(showPassword? TextFieldType.Password: TextFieldType.Text)"
-						Placeholder="Enter Your Password">Password
+						Placeholder="Enter Your Password">Password 
 
-						<FluentButton BackgroundColor="rgba(0, 0, 0, 0)" 
+						<FluentButton BackgroundColor="rgba(0, 0, 0, 0)"
 							IconEnd="@(showPassword ? new Icons.Regular.Size16.Eye() : new Icons.Regular.Size16.EyeOff())"
 							Title="Globe" OnClick="TogglePasswordVisibility" Slot="end" />
 					</FluentTextField>
-
+					<FluentValidationMessage For="@(() => loginModel.Password)"/>
 				</FluentStack>
 				<br />
 				<FluentButton IconStart="@(new Icons.Regular.Size16.Person())" Appearance="Appearance.Accent"

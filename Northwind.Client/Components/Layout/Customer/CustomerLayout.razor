@@ -18,10 +18,9 @@
 		<FluentSpacer />
 		<FluentIcon Id="Settings" Value="@(new Icons.Regular.Size20.Settings())" Color="Color.Lightweight"
 			OnClick="@ShowSettingAsync"/>
-		<FluentTooltip Anchor="Settings" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Bottom Delay=600>Settings</FluentTooltip>	
+		&nbsp; &nbsp;
 		<FluentProfileMenu Image="favicon.ico" Status="@PresenceStatus.Available" HeaderLabel="Northwind" Initials="NW"
-			FullName="@ContactName" PopoverStyle="min-width: 330px;" FooterLink=""
-			OnHeaderButtonClick="Logout" />
+			FullName="@ContactName" PopoverStyle="min-width: 330px;" FooterLink="" OnHeaderButtonClick="Logout" />
 	</FluentHeader>
 	<FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
 		<CustomerNavMenu />

@@ -2,6 +2,10 @@
 @inject IDialogService DialogService
 
 <FluentDesignTheme Mode="DesignThemeModes.System" StorageName="theme" />
+
+<FluentDialogProvider />
+<FluentToastProvider MaxToastCount="10" />
+
 <FluentLayout>
 	<FluentHeader>
 		Northwind
@@ -18,8 +22,6 @@
 	</FluentStack>
 </FluentLayout>
 
-<FluentDialogProvider />
-<FluentToastProvider MaxToastCount="10" />
 
 <div id="blazor-error-ui" data-nosnippet>
 	An unhandled error has occurred.
