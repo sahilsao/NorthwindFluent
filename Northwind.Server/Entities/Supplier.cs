@@ -4,11 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-<<<<<<< HEAD:Northwind.Server/Entities/Supplier.cs
 namespace Northwind.Server.Entities;
-=======
-namespace Northwind.Client.Entities;
->>>>>>> 27e4851e4715ee1fbe6428402f3a35d91cc9639f:Northwind.Client/Entities/Supplier.cs
 
 [Index("CompanyName", Name = "CompanyName")]
 [Index("PostalCode", Name = "PostalCode")]

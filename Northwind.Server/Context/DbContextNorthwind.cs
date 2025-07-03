@@ -1,16 +1,9 @@
-<<<<<<< HEAD:Northwind.Server/Context/DbContextNorthwind.cs
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Server.Entities;
 
 namespace Northwind.Server.Context;
-=======
-﻿using Microsoft.EntityFrameworkCore;
-using Northwind.Client.Entities;
-
-namespace Northwind.Client.Context;
->>>>>>> 27e4851e4715ee1fbe6428402f3a35d91cc9639f:Northwind.Client/Context/DbContextNorthwind.cs
 
 public partial class DbContextNorthwind : DbContext
 {
