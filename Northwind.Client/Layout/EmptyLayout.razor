@@ -2,13 +2,16 @@
 @inject IDialogService DialogService
 
 <FluentDesignTheme Mode="DesignThemeModes.System" StorageName="theme" />
+
+<FluentDialogProvider />
+<FluentToastProvider MaxToastCount="10" />
+
 <FluentLayout>
 	<FluentHeader>
 		Northwind
 		<FluentSpacer />
-		<FluentIcon Value="@(new Icons.Regular.Size20.Settings())"
-					Color="Color.Lightweight"
-					OnClick="@ShowSettingAsync" />
+		<FluentIcon Value="@(new Icons.Regular.Size20.Settings())" Color="Color.Lightweight"
+			OnClick="@ShowSettingAsync" />
 	</FluentHeader>
 	<FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
 		<FluentBodyContent Class="body-content">
@@ -19,8 +22,6 @@
 	</FluentStack>
 </FluentLayout>
 
-<FluentDialogProvider />
-<FluentToastProvider MaxToastCount="10" />
 
 <div id="blazor-error-ui" data-nosnippet>
 	An unhandled error has occurred.
